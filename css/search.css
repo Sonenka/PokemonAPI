@@ -1,0 +1,63 @@
+/* Элемент поиска */
+.search__input {
+    padding: 12px;
+    border-radius: 48px;
+    background-color: var(--white);
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.search__dropdown {
+    position: relative;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    width: auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* Кнопки */
+.search__button {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    width: auto;
+    
+    background-color: var(--white);
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    
+    border: none;
+    font-size: 16px;
+}
+
+/* Выпадающие списки */
+.search__menu {
+    display: none;
+    background-color: var(--white);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+
+    position: absolute;
+    top: 80px;
+    width: 150px;
+}
+
+.search__menu--active {
+    display: block;
+}
+
+/* Элементы меню */
+.search__menu-item {
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.search__menu-item:hover {
+    background: #f0f0f0;
+}

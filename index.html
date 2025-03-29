@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/search.css">
+</head>
+<body>
+    <main class="main">
+        <div class="search">
+            <input type="text" class="search__input" id="search__input" placeholder="Search Pokémon...">
+    
+            <div class="search__dropdown">
+                <button class="search__button search__button--filter" id="filter-btn">🔽</button>
+                <div class="search__menu" id="filter-menu">
+                    <p class="search__menu-item">Filter by type</p>
+                    <p class="search__menu-item">Filter by size</p>
+                    <p class="search__menu-item">Filter by generation</p>
+                </div>
+            </div>
+    
+            <div class="search__dropdown">
+                <button class="search__button search__button--sort" id="sort-btn">↕</button>
+                <div class="search__menu" id="sort-menu">
+                    <p class="search__menu-item">Sort by number ↑</p>
+                    <p class="search__menu-item">Sort by number ↓</p>
+                    <p class="search__menu-item">Sort A-Z</p>
+                    <p class="search__menu-item">Sort Z-A</p>
+                </div>
+            </div>
+        </div>
+
+        <ul class="list-wrapper">
+        </ul>
+
+
+        <div class="pagination"></div>
+    </main>
+
+
+    <script src="script.js"></script>
+</body>
+</html>

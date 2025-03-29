@@ -1,0 +1,51 @@
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --red: #FF696F;
+    --white: rgba(255, 255, 255, 1);
+    --search-pagination-height: 80px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.search,
+.pagination {
+    background-color: var(--red);
+    flex-shrink: 0;
+}
+
+.search {
+    height: var(--search-pagination-height);
+    display: grid;
+    grid-template-columns: 1fr 60px 60px;
+    padding: 15px 40px;
+    gap: 10px;
+    align-items: center;
+}
+
+.pagination {
+    height: var(--search-pagination-height);
+}
+
+.list-wrapper {
+    flex: 1;
+    height: calc(100vh - var(--search-pagination-height)*2);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    padding: 20px 40px;
+    gap: 20px;
+}
+
+
+
