@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/pagination.css">
     <link rel="stylesheet" href="css/card.css">
     <link rel="stylesheet" href="css/search.css">
 </head>
@@ -40,7 +40,29 @@
         </ul>
 
 
-        <div class="pagination"></div>
+        <div class="pagination">
+            <div class="pagination__buttons">
+                <button class="pagination__button button" id="firstButton">First</button>
+                <button class="pagination__button button" id="prevButton">Previous</button>
+            </div>
+        
+            <div class="pagination__counter" id="pageInfo"></div>
+
+            <div class="pagination__input">
+                <input 
+                    type="number" 
+                    id="pageInput" 
+                    min="1" 
+                    value="1"
+                >
+                <button class="pagination__button button pagination__button--go">Go</button>
+            </div>
+            
+            <div class="pagination__buttons">
+                <button class="pagination__button button" id="nextButton">Next</button>
+                <button class="pagination__button button" id="lastButton">Last</button>
+            </div>
+        </div>
     </main>
 
 

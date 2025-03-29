@@ -2,7 +2,10 @@
     /* Colors */
     --white: #ffffff;
     --red: #ff3e4e;
+    --dark-red: #e72838;
     --blue: #3761a8;
+    --dark-blue: #2d569c;
+    --bg-color: #eef4ff;
     --color-shadow: rgba(0, 0, 0, 0.1);
     --color-shadow-hover: rgba(0, 0, 0, 0.15);
     --color-border: #eee;

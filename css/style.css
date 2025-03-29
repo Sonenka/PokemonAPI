@@ -10,7 +10,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: #eef4ff;
+    background-color: var(--bg-color);
     font-family: "Nunito", sans-serif;
 }
 
