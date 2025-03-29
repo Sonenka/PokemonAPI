@@ -1,0 +1,31 @@
+:root {
+    /* Colors */
+    --white: #ffffff;
+    --red: #ff3e4e;
+    --blue: #3761a8;
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-shadow-hover: rgba(0, 0, 0, 0.15);
+    --color-border: #eee;
+    
+    /* Pokemon type colors */
+    --type-bug: #92BC2C;
+    --type-dark: #595761;
+    --type-dragon: #0C69C8;
+    --type-electric: #F2D94E;
+    --type-fire: #FBA54C;
+    --type-fairy: #EE90E6;
+    --type-fighting: #D3425F;
+    --type-flying: #A1BBEC;
+    --type-ghost: #5F6DBC;
+    --type-grass: #5FBD58;
+    --type-ground: #DA7C4D;
+    --type-ice: #75D0C1;
+    --type-normal: #A0A29F;
+    --type-poison: #B763CF;
+    --type-psychic: #FA8581;
+    --type-rock: #C9BB8A;
+    --type-steel: #5695A3;
+    --type-water: #539DDF;
+
+    --search-pagination-height: 80px;
+  }
