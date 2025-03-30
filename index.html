@@ -16,24 +16,53 @@
     <main class="main">
         <div class="search">
             <input type="text" class="search__input" id="search__input" placeholder="Search Pokémon...">
-    
-            <div class="search__dropdown">
-                <button class="search__button search__button--filter" id="filter-btn">🔽</button>
-                <div class="search__menu" id="filter-menu">
-                    <p class="search__menu-item">Filter by type</p>
-                    <p class="search__menu-item">Filter by size</p>
-                    <p class="search__menu-item">Filter by generation</p>
-                </div>
+        
+            <div class="dropdown">
+                <button class="dropdown__button" id="sortButton">
+                    <!-- <img src="img/sort-alpha.svg" id="sortIcon" alt="Sort"> -->
+                    <span id="sortText">A-Z</span>
+                </button>
+                <ul class="dropdown__list" id="sortList">
+                    <li data-sort="id-asc">
+                        <!-- <img src="img/sort-up.svg" alt="Sort ID Asc"> ID ↑ -->
+                    </li>
+                    <li data-sort="id-desc">
+                        <!-- <img src="img/sort-down.svg" alt="Sort ID Desc"> ID ↓ -->
+                    </li>
+                    <li data-sort="name-asc">
+                        <!-- <img src="img/sort-alpha.svg" alt="Sort A-Z"> A-Z -->
+                    </li>
+                    <li data-sort="name-desc">
+                        <!-- <img src="img/sort-alpha-reverse.svg" alt="Sort Z-A"> Z-A -->
+                    </li>
+                </ul>
             </div>
-    
-            <div class="search__dropdown">
-                <button class="search__button search__button--sort" id="sort-btn">↕</button>
-                <div class="search__menu" id="sort-menu">
-                    <p class="search__menu-item">Sort by number ↑</p>
-                    <p class="search__menu-item">Sort by number ↓</p>
-                    <p class="search__menu-item">Sort A-Z</p>
-                    <p class="search__menu-item">Sort Z-A</p>
-                </div>
+        
+            <div class="dropdown">
+                <button class="dropdown__button" id="filterDropdown">
+                    <!-- <img id="filterIcon" src="img/icons/type-all.svg" alt="Filter"> -->
+                </button>
+                <ul class="dropdown__list" id="filterOptions">
+                    <!-- <li data-type="all"><img src="img/icons/type-all.svg"> All</li>
+                    <li data-type="bug"><img src="img/types/bug.svg"> bug</li>
+                    <li data-type="dark"><img src="img/types/dark.svg"> dark</li>
+                    <li data-type="dragon"><img src="img/types/dragon.svg"> dragon</li>
+                    <li data-type="electric"><img src="img/types/electric.svg"> electric</li>
+                    <li data-type="fairy"><img src="img/types/fairy.svg"> fairy</li>
+                    <li data-type="fighting"><img src="img/types/fighting.svg"> fighting</li>
+                    <li data-type="fire"><img src="img/types/fire.svg"> fire</li>
+                    <li data-type="flying"><img src="img/types/flying.svg"> flying</li>
+                    <li data-type="ghost"><img src="img/types/ghost.svg"> ghost</li>
+                    <li data-type="grass"><img src="img/types/grass.svg"> grass</li>
+                    <li data-type="ground"><img src="img/types/ground.svg"> ground</li>
+                    <li data-type="ice"><img src="img/types/ice.svg"> ice</li>
+                    <li data-type="normal"><img src="img/types/normal.svg"> normal</li>
+                    <li data-type="poison"><img src="img/types/poison.svg"> poison</li>
+                    <li data-type="psychic"><img src="img/types/psychic.svg"> psychic</li>
+                    <li data-type="rock"><img src="img/types/rock.svg"> rock</li>
+                    <li data-type="steel"><img src="img/types/steel.svg"> steel</li>
+                    <li data-type="water"><img src="img/types/water.svg"> water</li> -->
+                </ul>
             </div>
         </div>
 

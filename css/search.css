@@ -1,3 +1,11 @@
+.search {
+    height: var(--search-pagination-height);
+    padding: 15px 40px;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+
 /* Элемент поиска */
 .search__input {
     padding: 12px;
@@ -6,58 +14,83 @@
     border: none;
     outline: none;
     font-size: 16px;
+    flex: 1;
 }
 
-.search__dropdown {
+.dropdown {
     position: relative;
-    height: 100%;
-    aspect-ratio: 1 / 1;
-    width: auto;
-    display: flex;
-    justify-content: center;
+    display: inline-block;
 }
 
-/* Кнопки */
-.search__button {
-    height: 100%;
-    aspect-ratio: 1 / 1;
-    width: auto;
-    
-    background-color: var(--white);
-    border-radius: 50%;
-
+.dropdown__button {
+    background: var(--white);
+    border: 1px solid var(--color-border);
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    
-    border: none;
-    font-size: 16px;
+    gap: 8px;
+    transition: 0.3s;
 }
 
-/* Выпадающие списки */
-.search__menu {
-    display: none;
-    background-color: var(--white);
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+.dropdown__button:hover {
+    background: green;
+}
 
+.dropdown__button img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Список опций */
+.dropdown__list {
     position: absolute;
-    top: 80px;
-    width: 150px;
+    top: 100%;
+    left: 0;
+    background: var(--white);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px var(--color-shadow);
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    display: none;
+    z-index: 10;
+    width: max-content;
+    min-width: 140px;
 }
 
-.search__menu--active {
+.dropdown:hover .dropdown__list {
     display: block;
 }
 
-/* Элементы меню */
-.search__menu-item {
-    padding: 5px 0;
+/* Элементы списка */
+.dropdown__list li {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-.search__menu-item:hover {
-    background: #f0f0f0;
+.dropdown__list li:hover {
+    background: green;
+}
+
+.dropdown__list img {
+    width: 20px;
+    height: 20px;
+}
+
+.no-results {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--blue);
 }
