@@ -69,6 +69,6 @@
     background-color: #cccccc;
 }
 
-.pagination__counter {
-    
+.pagination__button:disabled:hover {
+    transform: none;
 }

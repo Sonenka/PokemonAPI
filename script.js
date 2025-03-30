@@ -1,118 +1,188 @@
-// Переключение меню фильтрации
-document.getElementById("filter-btn").addEventListener("click", function() {
-    document.getElementById("filter-menu").classList.toggle("search__menu--active");
-    document.getElementById("sort-menu").classList.remove("search__menu--active");
-});
-
-// Переключение меню сортировки
-document.getElementById("sort-btn").addEventListener("click", function() {
-    document.getElementById("sort-menu").classList.toggle("search__menu--active");
-    document.getElementById("filter-menu").classList.remove("search__menu--active");
-});
-
-// Закрытие меню при клике вне их области
-document.addEventListener("click", function(event) {
-    if (!event.target.closest(".search__button")) {
-        document.getElementById("filter-menu").classList.remove("search__menu--active");
-        document.getElementById("sort-menu").classList.remove("search__menu--active");
-    }
-});
-
-const MAX_POKEMON = 12;
-const listWrapper = document.querySelector(".list-wrapper");
-const searchInput = document.getElementById("search__input");
-
+// Конфигурация
+const POKEMONS_PER_PAGE = 12;
+let currentPage = 1;
+let totalPages = 1;
 let allPokemons = [];
 
-fetch(`https://pokeapi.co/api/v2/pokemon?limit=${MAX_POKEMON}&offset=0`)
-    .then((response) => response.json())
-    .then((data) => {
-        allPokemons = data.results;
-        displayPokemons(allPokemons);
-    })
-    .catch(error => {
-        console.error("Error fetching pokemons:", error);
-    });
+// DOM элементы
+const elements = {
+  listWrapper: document.querySelector(".list-wrapper"),
+  firstButton: document.getElementById("firstButton"),
+  prevButton: document.getElementById("prevButton"),
+  nextButton: document.getElementById("nextButton"),
+  lastButton: document.getElementById("lastButton"),
+  pageInput: document.getElementById("pageInput"),
+  pageInfo: document.getElementById("pageInfo"),
+  goButton: document.querySelector(".pagination__button--go"),
+  loader: document.createElement("div"),
+};
 
-async function fetchPokemonData(id) {
+// Инициализация лоадера
+// Инициализация лоадера
+elements.loader.innerHTML = `
+  <div class="loader-container">
+    <div class="o-pokeball u-tada"></div>
+    <p>Pokémons are coming...</p>
+  </div>
+`;
+
+document.body.appendChild(elements.loader);
+
+
+// Инициализация приложения
+document.addEventListener("DOMContentLoaded", initApp);
+
+async function initApp() {
+  setupEventListeners();
+  await fetchTotalPokemonCount();
+  await loadPokemons();
+}
+
+// Получение общего количества покемонов с ID < 10000
+async function fetchTotalPokemonCount() {
+  try {
+    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20000");
+    const data = await response.json();
+    
+    // Фильтруем только покемонов с ID < 10000
+    const filteredPokemons = data.results.filter(pokemon => getPokemonIDFromURL(pokemon.url) < 10000);
+    totalPages = Math.ceil(filteredPokemons.length / POKEMONS_PER_PAGE);
+    
+    allPokemons = filteredPokemons; // Сохраняем всех покемонов с id < 10000
+  } catch (error) {
+    console.error("Error fetching total Pokémon count:", error);
+  }
+}
+
+// Настройка обработчиков событий
+function setupEventListeners() {
+  elements.firstButton.addEventListener("click", () => loadPage(1));
+  elements.prevButton.addEventListener("click", () => loadPage(currentPage - 1));
+  elements.nextButton.addEventListener("click", () => loadPage(currentPage + 1));
+  elements.lastButton.addEventListener("click", () => loadPage(totalPages));
+  elements.goButton.addEventListener("click", handleGoButtonClick);
+  elements.pageInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") handleGoButtonClick();
+  });
+}
+
+// Загрузка покемонов с ID > 10000
+async function loadPokemons() {
     try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        return await response.json();
+      elements.listWrapper.innerHTML = "";
+      // Показываем лоадер
+      elements.loader.style.display = "flex";
+  
+      const start = (currentPage - 1) * POKEMONS_PER_PAGE;
+      const end = start + POKEMONS_PER_PAGE;
+      const pokemonsToLoad = allPokemons.slice(start, end); // Берем только нужные
+  
+      const pokemonDataList = await Promise.all(
+        pokemonsToLoad.map(pokemon => fetchPokemonData(getPokemonIDFromURL(pokemon.url)))
+      );
+  
+      displayPokemons(pokemonsToLoad, pokemonDataList);
+      updatePaginationUI();
     } catch (error) {
-        console.error(`Failed to fetch Pokemon data for ID ${id}:`, error);
-        return null;
+      console.error("Error loading pokemons:", error);
+    } finally {
+      // Скрываем лоадер после загрузки данных
+      elements.loader.style.display = "none";
     }
+  }
+  
+// Отображение покемонов
+function displayPokemons(pokemons, pokemonDataList) {
+  elements.listWrapper.innerHTML = "";
+
+  const fragment = document.createDocumentFragment();
+  pokemons.forEach((pokemon, index) => {
+    if (pokemonDataList[index]) {
+      const pokemonID = getPokemonIDFromURL(pokemon.url);
+      const card = createPokemonCard(pokemon, pokemonID, pokemonDataList[index]);
+      fragment.appendChild(card);
+    }
+  });
+
+  elements.listWrapper.appendChild(fragment);
 }
 
-async function displayPokemons(pokemonList) {
-    listWrapper.innerHTML = "";
+// Создание карточки покемона
+function createPokemonCard(pokemon, pokemonID, pokemonData) {
+    if (!pokemonData) return document.createElement("div");
+  
+    const card = document.createElement("div");
+    card.className = "card";
+  
+    const types = pokemonData.types.map(type => type.type.name);
+    const typesHTML = types.map(type => `
+      <div class="card__type ${type}">
+        <img src="img/types/${type}.svg" title="${type}" alt="${type}"/>
+        <div>${type}</div>
+      </div>
+    `).join("");
+  
+    card.innerHTML = `
+      <div class="card__id">#${String(pokemonID).padStart(4, '0')}</div>
+      <div class="card__img">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemonID}.png"
+             alt="${pokemon.name}"
+             loading="lazy"
+             onload="this.classList.add('loaded')">
+      </div>
+      <div class="card__name">${capitalizeFirstLetter(pokemon.name)}</div>
+      <div class="card__types">${typesHTML}</div>
+    `;
+  
+    return card;
+  }
 
-    // Обрабатываем покемонов последовательно, чтобы избежать проблем с порядком
-    for (const pokemon of pokemonList) {
-        try {
-            const pokemonID = pokemon.url.split("/")[6];
-            const pokemonData = await fetchPokemonData(pokemonID);
-            
-
-            const types = pokemonData.types.map(typeInfo => typeInfo.type.name);
-            
-            const listItem = document.createElement("div");
-            listItem.className = "card";
-            listItem.innerHTML = `
-                <div class="card__id">#${pokemonID.padStart(4, '0')}</div>
-                <div class="card__img">
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemonID}.png" 
-                         alt="${pokemon.name}" 
-                         loading="lazy">
-                </div>
-                <div class="card__name">${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</div>
-                <div class="card__types"></div>
-            `;
-
-            listWrapper.appendChild(listItem);
-            
-            types.forEach(type => {
-                console.log(type);
-                const typesContainer = listItem.querySelector(".card__types");
-
-                const typeElement = document.createElement('div');
-                typeElement.classList = 'card__type';
-                typeElement.classList.add(type);
-                typeElement.innerHTML = `
-                    <img src="img/types/${type}.svg" title="${type}" alt="${type}"/>
-                    <div>${type}</div>
-                `;
-
-                typesContainer.appendChild(typeElement);
-            });
-        } catch (error) {
-            console.error(`Error displaying pokemon ${pokemon.name}:`, error);
-        }
-    }
+// Загрузка данных покемона
+async function fetchPokemonData(id) {
+  try {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.error(`Failed to fetch Pokemon data for ID ${id}:`, error);
+    return null;
+  }
 }
 
-// Оптимизированная функция поиска с задержкой
-let searchTimeout;
-searchInput.addEventListener("input", function() {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        handleSearch();
-    }, 300);
-});
+// Получение ID покемона из URL
+function getPokemonIDFromURL(url) {
+  const segments = url.split("/").filter(Boolean);
+  return parseInt(segments[segments.length - 1], 10);
+}
 
-function handleSearch() {
-    const searchTerm = searchInput.value.trim().toLowerCase();
-    
-    if (!searchTerm) {
-        displayPokemons(allPokemons);
-        return;
-    }
-    
-    const filteredPokemons = allPokemons.filter(pokemon => {
-        const pokemonID = pokemon.url.split("/")[6];
-        return pokemon.name.toLowerCase().includes(searchTerm) || 
-               pokemonID.toString().includes(searchTerm);
-    });
-    
-    displayPokemons(filteredPokemons);
+// Пагинация
+async function loadPage(page) {
+  page = Math.max(1, Math.min(page, totalPages));
+  if (page === currentPage) return;
+
+  currentPage = page;
+  await loadPokemons();
+}
+
+function handleGoButtonClick() {
+  const page = parseInt(elements.pageInput.value, 10);
+  if (!isNaN(page) && page >= 1 && page <= totalPages) {
+    loadPage(page);
+  } else {
+    elements.pageInput.value = currentPage;
+  }
+}
+
+function updatePaginationUI() {
+  elements.pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+  elements.pageInput.value = currentPage;
+
+  elements.firstButton.disabled = currentPage === 1;
+  elements.prevButton.disabled = currentPage === 1;
+  elements.nextButton.disabled = currentPage === totalPages;
+  elements.lastButton.disabled = currentPage === totalPages;
+}
+
+// Вспомогательные функции
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
