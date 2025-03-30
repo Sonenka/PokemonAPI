@@ -7,14 +7,35 @@
 }
 
 /* Элемент поиска */
+.search-container {
+    position: relative;
+    flex: 1;
+}
+
 .search__input {
-    padding: 12px;
+    padding: 12px 16px;
     border-radius: 48px;
     background-color: var(--white);
     border: none;
     outline: none;
     font-size: 16px;
-    flex: 1;
+    width: 100%;
+    
+}
+
+.search__clear {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--red);
+    cursor: pointer;
+    display: none;
+}
+
+.search__input:not(:placeholder-shown) + .search__clear {
+    display: block; /* Показываем крестик, когда есть текст в поле */
 }
 
 .dropdown {

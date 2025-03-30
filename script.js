@@ -187,21 +187,38 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+// Get the elements once and cache them for reuse
+const searchInput = document.getElementById("search__input");
+const clearButton = document.getElementById("search__clear");
+
+let filteredPokemons = []; // Переменная для хранения отфильтрованных покемонов
+
 // Обработчик поиска
-document.getElementById("search__input").addEventListener("input", handleSearch);
+searchInput.addEventListener("input", handleSearch);
 
 function handleSearch() {
-  const searchTerm = document.getElementById("search__input").value.toLowerCase().trim();
+  const searchTerm = searchInput.value.toLowerCase().trim();
 
   if (!searchTerm) {
     // Если строка поиска пустая, возвращаем стандартное отображение
-    totalPages = Math.ceil(allPokemons.length / POKEMONS_PER_PAGE);
-    currentPage = 1;
-    loadPokemons();
-    return;
+    resetSearch();
+  } else {
+    filterAndDisplayPokemons(searchTerm);
   }
+}
 
-  const filteredPokemons = allPokemons.filter(pokemon => {
+// Функция для сброса поиска и отображения всех покемонов
+function resetSearch() {
+  filteredPokemons = []; // Очищаем список отфильтрованных покемонов
+  totalPages = Math.ceil(allPokemons.length / POKEMONS_PER_PAGE);
+  currentPage = 1;
+  loadPokemons();
+  clearButton.style.display = 'none'; // Скрываем крестик
+}
+
+// Функция для фильтрации покемонов по поисковому запросу
+function filterAndDisplayPokemons(searchTerm) {
+  filteredPokemons = allPokemons.filter(pokemon => {
     const pokemonID = getPokemonIDFromURL(pokemon.url).toString();
     const pokemonName = pokemon.name.toLowerCase();
     return pokemonID.includes(searchTerm) || pokemonName.includes(searchTerm);
@@ -211,8 +228,8 @@ function handleSearch() {
     displayNoResultsMessage();
   } else {
     totalPages = Math.ceil(filteredPokemons.length / POKEMONS_PER_PAGE);
-    currentPage = 1;
-    displayFilteredPokemons(filteredPokemons);
+    currentPage = 1; // Начинаем с первой страницы отфильтрованных покемонов
+    displayFilteredPokemons();
   }
 }
 
@@ -224,7 +241,7 @@ function displayNoResultsMessage() {
 }
 
 // Отображение отфильтрованных покемонов
-async function displayFilteredPokemons(filteredPokemons) {
+async function displayFilteredPokemons() {
   elements.listWrapper.innerHTML = "";
   elements.loader.style.display = "flex";
 
@@ -243,5 +260,29 @@ async function displayFilteredPokemons(filteredPokemons) {
     console.error("Error displaying filtered pokemons:", error);
   } finally {
     elements.loader.style.display = "none";
+  }
+}
+
+// Функция для сброса поиска (если поисковая строка пуста)
+function clearSearch() {
+  searchInput.value = '';
+  clearButton.style.display = 'none';
+  resetSearch();
+}
+
+searchInput.addEventListener('input', () => {
+  clearButton.style.display = searchInput.value ? 'block' : 'none';
+});
+
+// Пагинация для отфильтрованных покемонов
+async function loadPage(page) {
+  page = Math.max(1, Math.min(page, totalPages));
+  if (page === currentPage) return;
+
+  currentPage = page;
+  if (filteredPokemons.length > 0) {
+    await displayFilteredPokemons();
+  } else {
+    await loadPokemons();
   }
 }
