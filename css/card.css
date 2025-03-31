@@ -42,6 +42,7 @@
 
 .card:hover .card__img {
     background-image: url(../img/pokeballHover.svg);
+    transition: all 0.3s ease;
 }
 
 .card__img img {
