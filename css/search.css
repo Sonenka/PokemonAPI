@@ -53,19 +53,19 @@
     color: var(--blue);
 }
 
-.sort {
+.dropdown {
     display: flex;
     align-items: center;
     gap: 8px;
     position: relative;
 }
 
-.sort__label {
+.dropdown__label {
     font-size: 16px;
     color: white;
 }
 
-.sort__select {
+.dropdown__select {
     font-size: 16px;
     padding: 12px 36px 12px 16px;
     border-radius: 48px;
@@ -78,7 +78,7 @@
     color: #555;
 }
 
-.sort__container::after {
+.dropdown__container::after {
     content: '\25BC';
     position: absolute;
     transform: translateY(-50%);
@@ -90,10 +90,10 @@
     color: var(--red);
 }
 
-.sort__option {
+.dropdown__option {
     font-family: "Nunito", sans-serif;
 }
 
-.sort__option:active {
+.dropdown__option:active {
     background-color: red;
 }
