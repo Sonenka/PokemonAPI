@@ -93,27 +93,37 @@ async function loadPokemons() {
   
 // Отображение покемонов
 function displayPokemons(pokemons, pokemonDataList) {
-  elements.listWrapper.innerHTML = "";
+    elements.listWrapper.innerHTML = "";
+    elements.listWrapper.style.opacity = "0"; // Скрываем, пока не загрузятся все картинки
 
-  const fragment = document.createDocumentFragment();
-  pokemons.forEach((pokemon, index) => {
-    if (pokemonDataList[index]) {
-      const pokemonID = getPokemonIDFromURL(pokemon.url);
-      const card = createPokemonCard(pokemon, pokemonID, pokemonDataList[index]);
-      fragment.appendChild(card);
-    }
-  });
+    const fragment = document.createDocumentFragment();
+    const imageLoadPromises = [];
 
-  elements.listWrapper.appendChild(fragment);
+    pokemons.forEach((pokemon, index) => {
+        if (pokemonDataList[index]) {
+            const pokemonID = getPokemonIDFromURL(pokemon.url);
+            const { card, imageLoadPromise } = createPokemonCard(pokemon, pokemonID, pokemonDataList[index]);
+
+            imageLoadPromises.push(imageLoadPromise);
+            fragment.appendChild(card);
+        }
+    });
+
+    elements.listWrapper.appendChild(fragment);
+
+    // Ждём, пока загрузятся ВСЕ картинки, потом показываем карточки
+    Promise.all(imageLoadPromises).then(() => {
+        elements.listWrapper.style.opacity = "1";
+    });
 }
 
 // Создание карточки покемона
 function createPokemonCard(pokemon, pokemonID, pokemonData) {
     if (!pokemonData) return document.createElement("div");
-  
+
     const card = document.createElement("div");
     card.className = "card";
-  
+
     const types = pokemonData.types.map(type => type.type.name);
     const typesHTML = types.map(type => `
       <div class="card__type ${type}">
@@ -121,21 +131,34 @@ function createPokemonCard(pokemon, pokemonID, pokemonData) {
         <div>${type}</div>
       </div>
     `).join("");
-  
+
     card.innerHTML = `
       <div class="card__id">#${String(pokemonID).padStart(4, '0')}</div>
-      <div class="card__img">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemonID}.png"
-             alt="${pokemon.name}"
-             loading="lazy"
-             onload="this.classList.add('loaded')">
-      </div>
+      <div class="card__img"></div>
       <div class="card__name">${capitalizeFirstLetter(pokemon.name)}</div>
       <div class="card__types">${typesHTML}</div>
     `;
-  
-    return card;
-  }
+
+    // Создаём изображение вручную
+    const img = document.createElement("img");
+    img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemonID}.png`;
+    img.alt = pokemon.name;
+    img.loading = "lazy";
+    
+    // Делаем промис для отслеживания загрузки изображения
+    const imageLoadPromise = new Promise((resolve) => {
+        img.onload = () => {
+            img.classList.add('loaded');
+            resolve();
+        };
+        img.onerror = () => resolve(); // Если ошибка, все равно разрешаем промис
+    });
+
+    // Вставляем изображение в карточку
+    card.querySelector(".card__img").appendChild(img);
+
+    return { card, imageLoadPromise };
+}
 
 // Загрузка данных покемона
 async function fetchPokemonData(id) {
@@ -195,6 +218,7 @@ let filteredPokemons = []; // Переменная для хранения от�
 
 // Обработчик поиска
 searchInput.addEventListener("input", handleSearch);
+clearButton.addEventListener("click", clearSearch); // Добавлен обработчик клика на крестик
 
 function handleSearch() {
   const searchTerm = searchInput.value.toLowerCase().trim();
@@ -205,6 +229,9 @@ function handleSearch() {
   } else {
     filterAndDisplayPokemons(searchTerm);
   }
+
+  // Показываем или скрываем крестик
+  clearButton.style.display = searchTerm ? "block" : "none";
 }
 
 // Функция для сброса поиска и отображения всех покемонов
@@ -269,10 +296,6 @@ function clearSearch() {
   clearButton.style.display = 'none';
   resetSearch();
 }
-
-searchInput.addEventListener('input', () => {
-  clearButton.style.display = searchInput.value ? 'block' : 'none';
-});
 
 // Пагинация для отфильтрованных покемонов
 async function loadPage(page) {

@@ -37,7 +37,6 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    transition: all 0.3s ease;
     position: relative;
 }
 
@@ -56,6 +55,7 @@
 
 .card__img img.loaded {
     opacity: 1;
+    transition: all 0.3s ease;
 }
 
 .card:hover .card__img img {
