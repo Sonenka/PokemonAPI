@@ -286,3 +286,30 @@ async function loadPage(page) {
     await loadPokemons();
   }
 }
+
+
+
+const sortSelect = document.getElementById('sortSelect');
+
+let currentSort = 'id-asc'; // Сортировка по ID по умолчанию
+
+// При изменении выбора сортировки
+sortSelect.addEventListener('change', () => {
+    currentSort = sortSelect.value;
+    sortPokemons();
+});
+
+// Функция сортировки покемонов
+function sortPokemons() {
+    if (currentSort === 'id-asc') {
+        allPokemons.sort((a, b) => getPokemonIDFromURL(a.url) - getPokemonIDFromURL(b.url));
+    } else if (currentSort === 'id-desc') {
+        allPokemons.sort((a, b) => getPokemonIDFromURL(b.url) - getPokemonIDFromURL(a.url));
+    } else if (currentSort === 'name-asc') {
+        allPokemons.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (currentSort === 'name-desc') {
+        allPokemons.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    loadPokemons(); // Перерисовываем список покемонов
+}

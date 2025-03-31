@@ -18,35 +18,28 @@
             <div class="search-container">
                 <input type="text" class="search__input" id="search__input" placeholder="Search Pokémon...">
                 <span class="search__clear" id="search__clear">&#10006;</span>
-              </div>
-        
-            <div class="dropdown">
-                <button class="dropdown__button" id="sortButton">
-                    <!-- <img src="img/sort-alpha.svg" id="sortIcon" alt="Sort"> -->
-                    <span id="sortText">A-Z</span>
-                </button>
-                <ul class="dropdown__list" id="sortList">
-                    <li data-sort="id-asc">
-                        <!-- <img src="img/sort-up.svg" alt="Sort ID Asc"> ID ↑ -->
-                    </li>
-                    <li data-sort="id-desc">
-                        <!-- <img src="img/sort-down.svg" alt="Sort ID Desc"> ID ↓ -->
-                    </li>
-                    <li data-sort="name-asc">
-                        <!-- <img src="img/sort-alpha.svg" alt="Sort A-Z"> A-Z -->
-                    </li>
-                    <li data-sort="name-desc">
-                        <!-- <img src="img/sort-alpha-reverse.svg" alt="Sort Z-A"> Z-A -->
-                    </li>
-                </ul>
             </div>
+
+            <div class="sort">
+                <label class="sort__label" for="sortSelect">Sort by:</label>
+                <div class="sort__container">
+                    <select class="sort__select" id="sortSelect">
+                        <option class="sort__option" value="id-asc">ID (Ascending)</option>
+                        <option class="sort__option" value="id-desc">ID (Descending)</option>
+                        <option class="sort__option" value="name-asc">Name (A - Z)</option>
+                        <option class="sort__option" value="name-desc">Name (Z - A)</option>
+                    </select>
+                </div>
+            </div>
+            
         
-            <div class="dropdown">
+            <!-- <div class="dropdown">
                 <button class="dropdown__button" id="filterDropdown">
-                    <!-- <img id="filterIcon" src="img/icons/type-all.svg" alt="Filter"> -->
+                    <img id="filterIcon" src="img/icons/type-all.svg" alt="Filter">
                 </button>
                 <ul class="dropdown__list" id="filterOptions">
-                    <!-- <li data-type="all"><img src="img/icons/type-all.svg"> All</li>
+                    <option selected disabled>Choose a book format</option>
+                    <li data-type="all"><img src="img/icons/type-all.svg"> All</li>
                     <li data-type="bug"><img src="img/types/bug.svg"> bug</li>
                     <li data-type="dark"><img src="img/types/dark.svg"> dark</li>
                     <li data-type="dragon"><img src="img/types/dragon.svg"> dragon</li>
@@ -64,9 +57,9 @@
                     <li data-type="psychic"><img src="img/types/psychic.svg"> psychic</li>
                     <li data-type="rock"><img src="img/types/rock.svg"> rock</li>
                     <li data-type="steel"><img src="img/types/steel.svg"> steel</li>
-                    <li data-type="water"><img src="img/types/water.svg"> water</li> -->
+                    <li data-type="water"><img src="img/types/water.svg"> water</li>
                 </ul>
-            </div>
+            </div> -->
         </div>
 
         <ul class="list-wrapper">
