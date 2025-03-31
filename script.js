@@ -150,45 +150,60 @@ function displayPokemons(pokemons, pokemonDataList) {
 
 // Создание карточки покемона
 function createPokemonCard(pokemon, pokemonID, pokemonData) {
-    if (!pokemonData) return document.createElement("div");
+  if (!pokemonData) return document.createElement("div");
 
-    const card = document.createElement("div");
-    card.className = "card";
+  const card = document.createElement("div");
+  card.className = "card";
 
-    const types = pokemonData.types.map(type => type.type.name);
-    const typesHTML = types.map(type => `
-      <div class="card__type ${type}">
-        <img src="img/types/${type}.svg" title="${type}" alt="${type}"/>
-        <div>${type}</div>
-      </div>
-    `).join("");
+  const types = pokemonData.types.map(type => type.type.name);
+  const typesHTML = types.map(type => `
+    <div class="card__type ${type}">
+      <img src="img/types/${type}.svg" title="${type}" alt="${type}"/>
+      <div>${type}</div>
+    </div>
+  `).join("");
 
-    card.innerHTML = `
-      <div class="card__id">#${String(pokemonID).padStart(4, '0')}</div>
-      <div class="card__img"></div>
-      <div class="card__name">${capitalizeFirstLetter(pokemon.name)}</div>
-      <div class="card__types">${typesHTML}</div>
-    `;
+  card.innerHTML = `
+    <div class="card__id">#${String(pokemonID).padStart(4, '0')}</div>
+    <div class="card__img"></div>
+    <div class="card__name">${capitalizeFirstLetter(pokemon.name)}</div>
+    <div class="card__types">${typesHTML}</div>
+  `;
 
-    // Создаём изображение вручную
-    const img = document.createElement("img");
-    img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemonID}.png`;
-    img.alt = pokemon.name;
-    img.loading = "lazy";
-    
-    // Делаем промис для отслеживания загрузки изображения
-    const imageLoadPromise = new Promise((resolve) => {
-        img.onload = () => {
-            img.classList.add('loaded');
-            resolve();
-        };
-        img.onerror = () => resolve(); // Если ошибка, все равно разрешаем промис
-    });
+  // Гибридный выбор источника изображения
+  const getPokemonImage = (pokemonData, pokemonID) => {
+    if (pokemonData?.sprites) {
+      return pokemonData.sprites.other?.home?.front_default || 
+             pokemonData.sprites.other?.['official-artwork']?.front_default || 
+             pokemonData.sprites.front_default;
+    }
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemonID}.png`;
+  };
 
-    // Вставляем изображение в карточку
-    card.querySelector(".card__img").appendChild(img);
+  const img = document.createElement("img");
+  img.src = getPokemonImage(pokemonData, pokemonID);
+  img.alt = pokemon.name;
+  img.loading = "lazy";
 
-    return { card, imageLoadPromise };
+  // Fallback-цепочка при ошибках загрузки
+  img.onerror = () => {
+    img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonID}.png`;
+    img.onerror = () => {
+      img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonID}.png`;
+    };
+  };
+
+  const imageLoadPromise = new Promise((resolve) => {
+    img.onload = () => {
+      img.classList.add('loaded');
+      resolve();
+    };
+    img.onerror = () => resolve(); // Разрешаем промис даже при ошибке
+  });
+
+  card.querySelector(".card__img").appendChild(img);
+
+  return { card, imageLoadPromise };
 }
 
 // Загрузка данных покемона
