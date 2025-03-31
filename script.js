@@ -89,7 +89,6 @@ function setupEventListeners() {
     });
     
     elements.filterSelect.addEventListener("change", handleTypeFilterChange);
-    elements.sortSelect.addEventListener("change", handleSortChange);
     elements.searchInput.addEventListener("input", handleSearch);
     elements.searchClear.addEventListener("click", clearSearch);
   }
@@ -248,7 +247,7 @@ function capitalizeFirstLetter(string) {
 }
 
 function handleSearch() {
-  const searchTerm = searchInput.value.toLowerCase().trim();
+  const searchTerm = elements.searchInput.value.toLowerCase().trim();
 
   if (!searchTerm) {
     // Если строка поиска пустая, возвращаем стандартное отображение
@@ -258,16 +257,15 @@ function handleSearch() {
   }
 
   // Показываем или скрываем крестик
-  clearButton.style.display = searchTerm ? "block" : "none";
+  elements.searchClear.style.display = searchTerm ? "block" : "none";
 }
 
 // Функция для сброса поиска и отображения всех покемонов
 function resetSearch() {
-  filteredPokemons = []; // Очищаем список отфильтрованных покемонов
-  totalPages = Math.ceil(allPokemons.length / POKEMONS_PER_PAGE);
+  filteredPokemons = []; 
   currentPage = 1;
-  loadPokemons();
-  clearButton.style.display = 'none'; // Скрываем крестик
+  loadPokemons(); // Загружаем всех покемонов обратно
+  elements.searchClear.style.display = 'none'; 
 }
 
 // Функция для фильтрации покемонов по поисковому запросу
@@ -278,11 +276,12 @@ function filterAndDisplayPokemons(searchTerm) {
     return pokemonID.includes(searchTerm) || pokemonName.includes(searchTerm);
   });
 
+  totalPages = Math.ceil(filteredPokemons.length / POKEMONS_PER_PAGE);
+  currentPage = 1; 
+
   if (filteredPokemons.length === 0) {
     displayNoResultsMessage();
   } else {
-    totalPages = Math.ceil(filteredPokemons.length / POKEMONS_PER_PAGE);
-    currentPage = 1; // Начинаем с первой страницы отфильтрованных покемонов
     displayFilteredPokemons();
   }
 }
@@ -309,7 +308,7 @@ async function displayFilteredPokemons() {
     );
 
     displayPokemons(pokemonsToLoad, pokemonDataList);
-    updatePaginationUI();
+    updatePaginationUI(); // Обновляем пагинацию после поиска
   } catch (error) {
     console.error("Error displaying filtered pokemons:", error);
   } finally {
